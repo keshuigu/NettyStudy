@@ -94,7 +94,7 @@ selector 的作用就是配合一个线程来管理多个 channel，获取这些
 
 ```mermaid
 graph TD
-subgraph selector 版
+subgraph selector版
 thread --> selector
 selector --> c1(channel)
 selector --> c2(channel)
