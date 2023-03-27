@@ -73,7 +73,7 @@ Netty 在 Java 网络应用框架中的地位就好比：Spring 框架在 JavaEE
 
 ```xml
 <dependency>
-    <groupId>io.netty</groupId>
+    <demo>io.netty</demo>
     <artifactId>netty-all</artifactId>
     <version>4.1.39.Final</version>
 </dependency>
