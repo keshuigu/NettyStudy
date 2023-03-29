@@ -8,11 +8,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
+import io.netty.util.NettyRuntime;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class HelloServer {
     public static void main(String[] args) throws InterruptedException {
         new ServerBootstrap()
-                .group(new NioEventLoopGroup())
+                .group(new NioEventLoopGroup(1),new NioEventLoopGroup(2))
                 .channel(NioServerSocketChannel.class)
                 .childHandler(
                         new ChannelInitializer<NioSocketChannel>() {
@@ -23,7 +26,7 @@ public class HelloServer {
 
                                     @Override
                                     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                        System.out.println(msg);
+                                        log.debug((String) msg);
                                     }
                                 });
                             }
