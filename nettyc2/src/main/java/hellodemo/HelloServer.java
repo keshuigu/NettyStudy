@@ -1,36 +1,39 @@
 package hellodemo;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.util.NettyRuntime;
 import lombok.extern.slf4j.Slf4j;
+
+import java.nio.charset.Charset;
 
 @Slf4j
 public class HelloServer {
     public static void main(String[] args) throws InterruptedException {
         new ServerBootstrap()
-                .group(new NioEventLoopGroup(1),new NioEventLoopGroup(2))
+                .group(new NioEventLoopGroup())
                 .channel(NioServerSocketChannel.class)
-                .childHandler(
-                        new ChannelInitializer<NioSocketChannel>() {
+                .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                    @Override
+                    protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
+                        nioSocketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
                             @Override
-                            protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                                nioSocketChannel.pipeline().addLast(new StringDecoder());
-                                nioSocketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-
-                                    @Override
-                                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                        log.debug((String) msg);
-                                    }
-                                });
+                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                ByteBuf buf = (ByteBuf) msg;
+                                log.debug(buf.toString(Charset.defaultCharset()));
+                                ByteBuf response = ctx.alloc().buffer();
+                                response.writeBytes(buf);
+                                buf.release();
+                                ctx.writeAndFlush(response);
                             }
-                        }
-                ).bind(12345).sync();
+                        });
+                    }
+                })
+                .bind(12345);
     }
 }
