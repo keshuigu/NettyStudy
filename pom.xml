@@ -11,6 +11,7 @@
     <modules>
         <module>nettyc1</module>
         <module>nettyc2</module>
+        <module>nettyc3</module>
     </modules>
 
     <properties>
