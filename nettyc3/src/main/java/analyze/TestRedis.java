@@ -19,7 +19,7 @@ public class TestRedis {
                         ByteBuf buf = (ByteBuf) msg;
                         System.out.println(buf.toString(Charset.defaultCharset()));
                         super.channelRead(ctx, msg);
-                        ctx.fireChannelRead(msg);
+                        super.channelRead(ctx, msg);
                     }
                 },
                 new ChannelInboundHandlerAdapter(){
